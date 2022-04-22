@@ -4,25 +4,32 @@ import React from "react";
 import HeartOutlineIcon from "@heroicons/react/outline/HeartIcon";
 import HeartSolidIcon from "@heroicons/react/solid/HeartIcon";
 import AsyncSelect from "react-select/async";
+import Snackbar from "../Snackbar/Snackbar";
+import ResultModal from "../Modal/ResultModal";
 
-const Board = ({ staff, movieId }) => {
-  const [cast, setCast] = useState([]);
+const SNACKBAR_DURATION = 3000;
+
+const Board = ({ cast, movie }) => {
   const [covered, setCovered] = useState([false, true, true, true, true]);
   const [lives, setLives] = useState([true, true, true, true, true]);
   const [result, setResult] = useState();
   const [guess, setGuess] = useState();
+  const [snackbarMessage, setSnackbarMessage] = useState(false);
+  const [resultModalOpen, setResultModalOpen] = useState(result ? true : false);
 
   useEffect(() => {
-    setCast(staff?.filter((s) => s?.professionKey === "ACTOR")?.slice(0, 5));
-  }, [staff]);
+    if (!result)
+      if (snackbarMessage)
+        setTimeout(() => setSnackbarMessage(null), SNACKBAR_DURATION);
+  }, [snackbarMessage]);
 
   useEffect(() => {
-    if (result) console.log(result);
+    if (result) setResultModalOpen(true);
   }, [result]);
 
   useEffect(() => {
-    console.log(guess);
-  }, [guess]);
+    console.log(movie);
+  }, []);
 
   const promiseOptions = (inputValue) =>
     new Promise((resolve, reject) => {
@@ -41,26 +48,94 @@ const Board = ({ staff, movieId }) => {
         ?.then((json) =>
           resolve(
             json?.films?.map((film) => {
-              return { value: film?.filmId, label: film?.nameEn };
+              return {
+                value: film?.filmId,
+                label: film?.nameEn ?? film?.nameRu,
+              };
             })
           )
-        );
+        )
+        ?.catch((err) => console.log(err));
     });
 
+  const decrementLives = () => {
+    setLives((prev) => {
+      let temp = [...prev];
+      if (temp?.some((t) => t === true)) {
+        let i = temp?.length - 1;
+        while (temp[i] === false) {
+          i--;
+        }
+        temp[i] = false;
+      } else {
+        setSnackbarMessage(movie?.nameEn ?? movie?.nameRu);
+        setResult("loss");
+      }
+      return temp;
+    });
+  };
+
   return (
-    <main className="flex flex-col w-full h-full gap-16 justify-center">
-      <div>
-        <AsyncSelect
-          loadOptions={promiseOptions}
-          onChange={(e) => setGuess(e?.value)}
-        />
-      </div>
+    <main className="flex flex-col w-full h-full gap-12 justify-center">
+      {snackbarMessage && (
+        <Snackbar message={snackbarMessage} result={result} />
+      )}
       <div className="flex flex-row gap-8 justify-center">
         {lives?.map((l, index) => {
           if (l) return <HeartSolidIcon key={index} className="h-12" />;
           else return <HeartOutlineIcon key={index} className="h-12" />;
         })}
       </div>
+
+      <div className="flex flex-row gap-8 justify-center">
+        <div className="w-1/3">
+          <AsyncSelect
+            loadOptions={promiseOptions}
+            onChange={(e) => setGuess(e?.value)}
+            isDisabled={result}
+            theme={(theme) => ({
+              ...theme,
+              colors: {
+                ...theme.colors,
+                primary: "#f97316",
+                primary75: "#fb923c",
+                primary50: "#fdba74",
+                primary25: "#f97316",
+                neutral0: "#111827",
+                neutral5: "",
+                neutral10: "",
+                neutral20: "",
+                neutral30: "",
+                neutral40: "",
+                neutral50: "",
+                neutral60: "",
+                neutral70: "",
+                neutral80: "",
+                neutral90: "",
+              },
+            })}
+          />
+        </div>
+        <button
+          className="border-2 border-orange-500 rounded-md px-4 hover:bg-orange-500 hover:disabled:bg-transparent text-lg py-1"
+          disabled={result}
+          onClick={() => {
+            if (!guess) {
+              setSnackbarMessage("Movie was not selected");
+              return;
+            }
+            if (movie?.filmId === guess) {
+              setSnackbarMessage(movie?.nameEn ?? movie?.nameRu);
+              setResult("win");
+            } else {
+              decrementLives();
+            }
+          }}
+        >
+          Submit
+        </button>
+      </div>
+
       <div className="flex flex-row gap-16 justify-center">
         {cast?.map((c, index) => (
           <div key={index} className="relative flex flex-col w-48 gap-8">
@@ -69,24 +144,14 @@ const Board = ({ staff, movieId }) => {
                 <div
                   className="w-full h-full rounded-lg bg-gray-800 text-8xl text-gray-600 flex flex-row items-center justify-center cursor-pointer"
                   onClick={() => {
-                    setCovered((prev) => {
-                      let temp = [...prev];
-                      temp[index] = false;
-                      return temp;
-                    });
-                    setLives((prev) => {
-                      let temp = [...prev];
-                      if (temp?.some((t) => t === true)) {
-                        let i = temp?.length - 1;
-                        while (temp[i] === false) {
-                          i--;
-                        }
-                        temp[i] = false;
-                      } else {
-                        setResult("loss");
-                      }
-                      return temp;
-                    });
+                    if (!result) {
+                      setCovered((prev) => {
+                        let temp = [...prev];
+                        temp[index] = false;
+                        return temp;
+                      });
+                      decrementLives();
+                    }
                   }}
                 >
                   ?
@@ -103,37 +168,17 @@ const Board = ({ staff, movieId }) => {
               )}
             </div>
             <p className="text-xl text-center">
-              {!covered[index] && c?.nameEn}
+              {!covered[index] ? (c?.nameEn ? c?.nameEn : c?.nameRu) : ""}
             </p>
           </div>
         ))}
+        <ResultModal
+          result={result}
+          open={resultModalOpen}
+          setOpen={setResultModalOpen}
+          movie={movie}
+        />
       </div>
-      <button
-        onClick={() => {
-          if (!guess) {
-            return;
-          }
-          if (movieId === guess) {
-            setResult("win");
-          } else {
-            setLives((prev) => {
-              let temp = [...prev];
-              if (temp?.some((t) => t === true)) {
-                let i = temp?.length - 1;
-                while (temp[i] === false) {
-                  i--;
-                }
-                temp[i] = false;
-              } else {
-                setResult("loss");
-              }
-              return temp;
-            });
-          }
-        }}
-      >
-        Submit
-      </button>
     </main>
   );
 };
