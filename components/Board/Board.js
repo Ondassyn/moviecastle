@@ -67,9 +67,10 @@ const Board = ({ cast, movie }) => {
           i--;
         }
         temp[i] = false;
-      } else {
-        setSnackbarMessage(movie?.nameEn ?? movie?.nameRu);
-        setResult("loss");
+        if (i === 0) {
+          setSnackbarMessage(movie?.nameEn ?? movie?.nameRu);
+          setResult("loss");
+        }
       }
       return temp;
     });
@@ -83,7 +84,13 @@ const Board = ({ cast, movie }) => {
       <div className="flex flex-row gap-8 justify-center">
         {lives?.map((l, index) => {
           if (l) return <HeartSolidIcon key={index} className="h-12" />;
-          else return <HeartOutlineIcon key={index} className="h-12" />;
+          else
+            return (
+              <HeartOutlineIcon
+                key={index}
+                className="h-12 animate-ping-once"
+              />
+            );
         })}
       </div>
 
@@ -139,10 +146,14 @@ const Board = ({ cast, movie }) => {
       <div className="flex flex-row gap-16 justify-center">
         {cast?.map((c, index) => (
           <div key={index} className="relative flex flex-col w-48 gap-8">
-            <div className="h-72 rounded-lg shadow-lg">
-              {covered[index] ? (
+            <div className="h-[288px] w-[192px] perspective bg-transparent rounded-lg shadow-lg">
+              <div
+                className={`relative w-full h-full preserve-3d duration-1000 ${
+                  !covered[index] && "flip-horizontally"
+                }`}
+              >
                 <div
-                  className="w-full h-full rounded-lg bg-gray-800 text-8xl text-gray-600 flex flex-row items-center justify-center cursor-pointer"
+                  className="absolute backface-hidden w-full h-full rounded-lg bg-gray-800 text-8xl text-gray-600 flex flex-row items-center justify-center cursor-pointer"
                   onClick={() => {
                     if (!result) {
                       setCovered((prev) => {
@@ -156,16 +167,18 @@ const Board = ({ cast, movie }) => {
                 >
                   ?
                 </div>
-              ) : (
-                <Image
-                  src={c?.posterUrl}
-                  width={192}
-                  height={288}
-                  alt="image"
-                  layout="fixed"
-                  className="rounded-lg"
-                />
-              )}
+
+                <div className="absolute flip-horizontally backface-hidden w-full h-full">
+                  <Image
+                    src={c?.posterUrl}
+                    width={192}
+                    height={288}
+                    alt="image"
+                    layout="fixed"
+                    className="rounded-lg"
+                  />
+                </div>
+              </div>
             </div>
             <p className="text-xl text-center">
               {!covered[index] ? (c?.nameEn ? c?.nameEn : c?.nameRu) : ""}

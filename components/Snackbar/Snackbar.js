@@ -12,7 +12,7 @@ const Snackbar = ({ message, result }) => {
             : "bg-orange-600"
         }`}
       >
-        <div className="mx-8 text-xl font-normal">{message}</div>
+        <div className="mx-8 text-xl text-center font-normal">{message}</div>
       </div>
     </div>
   );
