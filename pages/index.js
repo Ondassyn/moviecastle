@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import Board from "../components/Board/Board";
 import Header from "../components/Header/Header";
+import differenceInDays from "date-fns/differenceInDays";
 
-export default function Home({ movies }) {
+export default function Home({ movies, movieNumber }) {
   const [movie, setMovie] = useState();
   const [cast, setCast] = useState();
 
   useEffect(() => {
     if (movies?.films?.length) {
-      setMovie(movies?.films[3]);
+      setMovie(movies?.films[movieNumber % 20]);
     }
   }, [movies]);
 
@@ -30,7 +31,7 @@ export default function Home({ movies }) {
           setCast(
             shuffle(
               json?.filter((s) => s?.professionKey === "ACTOR")?.slice(0, 5),
-              110
+              movieNumber
             )
           )
         );
@@ -48,9 +49,13 @@ export default function Home({ movies }) {
 export async function getServerSideProps() {
   // Fetch data from external API
 
+  const numberOfDays = differenceInDays(new Date(), new Date(2000, 0, 0));
+  const movieNumber = Math.round((random(numberOfDays) * 1000) % 250);
+  console.log(movieNumber / 20);
+
   const movieRes = await fetch(
     "https://kinopoiskapiunofficial.tech/api/v2.2/films/top?" +
-      new URLSearchParams({ page: 1 }),
+      new URLSearchParams({ page: Math.floor(movieNumber / 20) }),
     {
       method: "GET",
       headers: {
@@ -62,7 +67,7 @@ export async function getServerSideProps() {
   const movies = await movieRes?.json();
 
   // Pass data to the page via props
-  return { props: { movies } };
+  return { props: { movies, movieNumber } };
 }
 
 const shuffle = (array, seed) => {
@@ -86,7 +91,7 @@ const shuffle = (array, seed) => {
   return array;
 };
 
-function random(seed) {
+const random = (seed) => {
   let x = Math.sin(seed++) * 10000;
   return x - Math.floor(x);
-}
+};
