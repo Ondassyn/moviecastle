@@ -1,4 +1,5 @@
 import { FilmIcon, HeartIcon, ThumbUpIcon } from "@heroicons/react/outline";
+import HeartSolidIcon from "@heroicons/react/solid/HeartIcon";
 import React from "react";
 import AlertModal from "./AlertModal";
 
@@ -13,11 +14,15 @@ const InfoModal = ({ open, setOpen }) => {
           <p>Guess the movie by its main cast</p>
         </div>
         <div className="flex flex-row items-center gap-6">
-          <HeartIcon className="h-6 flex-shrink-0" />
+          <HeartSolidIcon className="h-6 flex-shrink-0" />
           <p>
-            You can spend given 5 lives either on opening an addition cast
-            member or on a movie guess
+            You can spend given lives either on opening an addition cast member
+            or on a movie guess
           </p>
+        </div>
+        <div className="flex flex-row items-center gap-6">
+          <HeartIcon className="h-6 flex-shrink-0" />
+          <p>When your number of lives reaches zero you lose</p>
         </div>
         <div className="flex flex-row items-center gap-6">
           <ThumbUpIcon className="h-6 flex-shrink-0" />
