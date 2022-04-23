@@ -10,7 +10,7 @@ const ResultModal = ({ result, open, setOpen, movie }) => {
       setOpen={setOpen}
     >
       <div
-        className={`flex flex-col gap-4 w-96 items-center border-4 border-double rounded-lg p-8 ${
+        className={`flex flex-col gap-4 w-[26rem] items-center border-4 border-double rounded-lg p-8 ${
           result === "win" ? "border-green-600" : "border-red-600"
         }`}
       >

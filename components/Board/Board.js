@@ -11,25 +11,56 @@ const SNACKBAR_DURATION = 3000;
 
 const Board = ({ cast, movie }) => {
   const [covered, setCovered] = useState([false, true, true, true, true]);
-  const [lives, setLives] = useState([true, true, true, true, true]);
+  const [lives, setLives] = useState();
   const [result, setResult] = useState();
   const [guess, setGuess] = useState();
-  const [snackbarMessage, setSnackbarMessage] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState();
   const [resultModalOpen, setResultModalOpen] = useState(result ? true : false);
 
   useEffect(() => {
-    if (!result)
-      if (snackbarMessage)
-        setTimeout(() => setSnackbarMessage(null), SNACKBAR_DURATION);
+    const storedMovieId = JSON.parse(localStorage.getItem("movieId"));
+
+    if (!storedMovieId || !localStorage.getItem("played")) {
+      localStorage.setItem("played", JSON.stringify(0));
+      localStorage.setItem("won", JSON.stringify(0));
+      localStorage.setItem("currentStreak", JSON.stringify(0));
+      localStorage.setItem("maxStreak", JSON.stringify(0));
+      localStorage.setItem("winsPerLive", JSON.stringify([0, 0, 0, 0, 0]));
+    }
+
+    if (storedMovieId !== movie?.filmId) {
+      setCovered([false, true, true, true, true]);
+      localStorage.setItem(
+        "covered",
+        JSON.stringify([false, true, true, true, true])
+      );
+      setLives([true, true, true, true, true]);
+      localStorage.setItem(
+        "lives",
+        JSON.stringify([true, true, true, true, true])
+      );
+      setResult(null);
+      localStorage.setItem("result", null);
+      setSnackbarMessage(null);
+      localStorage.setItem("snackbarMessage", null);
+
+      localStorage.setItem("movieId", JSON.stringify(movie?.filmId));
+    } else {
+      setCovered(JSON.parse(localStorage.getItem("covered")));
+      setLives(JSON.parse(localStorage.getItem("lives")));
+      setResult(JSON.parse(localStorage.getItem("result")));
+      setSnackbarMessage(JSON.parse(localStorage.getItem("snackbarMessage")));
+    }
+  }, [movie]);
+
+  useEffect(() => {
+    if (snackbarMessage === "Movie was not selected")
+      setTimeout(() => setSnackbarMessage(null), SNACKBAR_DURATION);
   }, [snackbarMessage]);
 
   useEffect(() => {
     if (result) setResultModalOpen(true);
   }, [result]);
-
-  useEffect(() => {
-    console.log(movie);
-  }, []);
 
   const promiseOptions = (inputValue) =>
     new Promise((resolve, reject) => {
@@ -69,9 +100,16 @@ const Board = ({ cast, movie }) => {
         temp[i] = false;
         if (i === 0) {
           setSnackbarMessage(movie?.nameEn ?? movie?.nameRu);
+          localStorage.setItem(
+            "snackbarMessage",
+            JSON.stringify(movie?.nameEn ?? movie?.nameRu)
+          );
+
           setResult("loss");
+          localStorage.setItem("result", JSON.stringify("loss"));
         }
       }
+      localStorage.setItem("lives", JSON.stringify(temp));
       return temp;
     });
   };
@@ -81,7 +119,7 @@ const Board = ({ cast, movie }) => {
       {snackbarMessage && (
         <Snackbar message={snackbarMessage} result={result} />
       )}
-      <div className="flex flex-row gap-8 justify-center">
+      <div className="flex flex-row mt-6 gap-8 justify-center">
         {lives?.map((l, index) => {
           if (l) return <HeartSolidIcon key={index} className="h-12" />;
           else
@@ -133,7 +171,39 @@ const Board = ({ cast, movie }) => {
             }
             if (movie?.filmId === guess) {
               setSnackbarMessage(movie?.nameEn ?? movie?.nameRu);
+              localStorage.setItem(
+                "snackbarMessage",
+                JSON.stringify(movie?.nameEn ?? movie?.nameRu)
+              );
+
               setResult("win");
+              localStorage.setItem("result", JSON.stringify("win"));
+              let winsPerLive = JSON.parse(localStorage.getItem("winsPerLive"));
+              winsPerLive[lives?.filter((l) => l === true).length - 1]++;
+              localStorage.setItem("winsPerLive", JSON.stringify(winsPerLive));
+              localStorage.setItem(
+                "played",
+                JSON.stringify(JSON.parse(localStorage.getItem("played")) + 1)
+              );
+              localStorage.setItem(
+                "won",
+                JSON.stringify(JSON.parse(localStorage.getItem("won")) + 1)
+              );
+              localStorage.setItem(
+                "currentStreak",
+                JSON.stringify(
+                  JSON.parse(localStorage.getItem("currentStreak")) + 1
+                )
+              );
+              localStorage.setItem(
+                "maxStreak",
+                JSON.stringify(
+                  JSON.parse(localStorage.getItem("currentStreak")) >
+                    JSON.parse(localStorage.getItem("maxStreak"))
+                    ? JSON.parse(localStorage.getItem("currentStreak"))
+                    : JSON.parse(localStorage.getItem("maxStreak"))
+                )
+              );
             } else {
               decrementLives();
             }
@@ -159,6 +229,7 @@ const Board = ({ cast, movie }) => {
                       setCovered((prev) => {
                         let temp = [...prev];
                         temp[index] = false;
+                        localStorage.setItem("covered", JSON.stringify(temp));
                         return temp;
                       });
                       decrementLives();

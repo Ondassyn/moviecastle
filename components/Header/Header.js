@@ -1,25 +1,42 @@
-import { InformationCircleIcon } from "@heroicons/react/outline";
-import React, { useState } from "react";
+import { ChartBarIcon, InformationCircleIcon } from "@heroicons/react/outline";
+import React, { useEffect, useState } from "react";
 import InfoModal from "../Modal/InfoModal";
+import StatsModal from "../Modal/StatsModal";
 
 const Header = () => {
+  const [isSSR, setIsSSR] = useState(true);
+
+  useEffect(() => {
+    setIsSSR(false);
+  }, []);
+
   const [infoModalOpen, setInfoModalOpen] = useState(false);
+  const [statsModalOpen, setStatsModalOpen] = useState(false);
 
   return (
     <div>
       <div className="mb-12 py-4 px-16 flex flex-row justify-between border-b items-center">
         <div>
           <InformationCircleIcon
-            className="h-8 cursor-pointer"
+            className="h-8 cursor-pointer hover:text-orange-500"
             onClick={() => setInfoModalOpen(true)}
           />
         </div>
-        <div>
-          <p className="text-4xl">MovieCastle</p>
+        <div className="flex flex-row items-center gap-4">
+          <p className="text-4xl font-serif">MovieCastle</p>
         </div>
-        <div></div>
+        <div>
+          <ChartBarIcon
+            className="h-8 cursor-pointer hover:text-orange-500"
+            onClick={() => setStatsModalOpen(true)}
+          />
+        </div>
       </div>
       <InfoModal open={infoModalOpen} setOpen={setInfoModalOpen} />
+
+      {!isSSR && (
+        <StatsModal open={statsModalOpen} setOpen={setStatsModalOpen} />
+      )}
     </div>
   );
 };

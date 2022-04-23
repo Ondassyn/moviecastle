@@ -1,5 +1,4 @@
 import { FilmIcon, HeartIcon, ThumbUpIcon } from "@heroicons/react/outline";
-import Image from "next/image";
 import React from "react";
 import AlertModal from "./AlertModal";
 
@@ -7,7 +6,7 @@ const InfoModal = ({ open, setOpen }) => {
   return (
     <AlertModal headerText={"How to play"} open={open} setOpen={setOpen}>
       <div
-        className={`flex flex-col gap-4 w-96 border-4 border-double rounded-lg p-8 text-lg`}
+        className={`flex flex-col gap-4 w-[30rem] border-4 border-double rounded-lg p-8 text-lg`}
       >
         <div className="flex flex-row items-center gap-6">
           <FilmIcon className="h-6" />

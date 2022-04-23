@@ -8,7 +8,7 @@ export default function Home({ movies }) {
 
   useEffect(() => {
     if (movies?.films?.length) {
-      setMovie(movies?.films[getRandomInt(0, movies?.films?.length)]);
+      setMovie(movies?.films[3]);
     }
   }, [movies]);
 
@@ -28,7 +28,10 @@ export default function Home({ movies }) {
         ?.then((res) => res?.json())
         ?.then((json) =>
           setCast(
-            json?.filter((s) => s?.professionKey === "ACTOR")?.slice(0, 5)
+            shuffle(
+              json?.filter((s) => s?.professionKey === "ACTOR")?.slice(0, 5),
+              110
+            )
           )
         );
   }, [movie]);
@@ -47,7 +50,7 @@ export async function getServerSideProps() {
 
   const movieRes = await fetch(
     "https://kinopoiskapiunofficial.tech/api/v2.2/films/top?" +
-      new URLSearchParams({ page: getRandomInt(1, 13) }),
+      new URLSearchParams({ page: 1 }),
     {
       method: "GET",
       headers: {
@@ -62,8 +65,28 @@ export async function getServerSideProps() {
   return { props: { movies } };
 }
 
-const getRandomInt = (min, max) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min) + min);
+const shuffle = (array, seed) => {
+  // <-- ADDED ARGUMENT
+  let m = array.length,
+    t,
+    i;
+
+  // While there remain elements to shuffle…
+  while (m) {
+    // Pick a remaining element…
+    i = Math.floor(random(seed) * m--); // <-- MODIFIED LINE
+
+    // And swap it with the current element.
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+    ++seed; // <-- ADDED LINE
+  }
+
+  return array;
 };
+
+function random(seed) {
+  let x = Math.sin(seed++) * 10000;
+  return x - Math.floor(x);
+}
