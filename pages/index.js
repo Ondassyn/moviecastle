@@ -51,7 +51,6 @@ export async function getServerSideProps() {
 
   const numberOfDays = differenceInDays(new Date(), new Date(2000, 0, 0));
   const movieNumber = Math.round((random(numberOfDays) * 1000) % 250);
-  console.log(movieNumber / 20);
 
   const movieRes = await fetch(
     "https://kinopoiskapiunofficial.tech/api/v2.2/films/top?" +

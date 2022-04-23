@@ -8,6 +8,7 @@ const Header = () => {
 
   useEffect(() => {
     setIsSSR(false);
+    if (!JSON.parse(localStorage.getItem("played"))) setInfoModalOpen(true);
   }, []);
 
   const [infoModalOpen, setInfoModalOpen] = useState(false);
