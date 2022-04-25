@@ -29,7 +29,7 @@ const Board = ({ cast, movie }) => {
     }
 
     if (storedMovieId !== movie?.filmId) {
-      if (JSON.parse(localStorage.get("winsPerLive")).length !== 6)
+      if (JSON.parse(localStorage.getItem("winsPerLive")).length !== 6)
         localStorage.setItem("winsPerLive", JSON.stringify([0, 0, 0, 0, 0, 0]));
 
       setCovered([false, true, true, true, true, true]);
