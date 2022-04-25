@@ -29,6 +29,9 @@ const Board = ({ cast, movie }) => {
     }
 
     if (storedMovieId !== movie?.filmId) {
+      if (JSON.parse(localStorage.get("winsPerLive")).length !== 6)
+        localStorage.setItem("winsPerLive", JSON.stringify([0, 0, 0, 0, 0, 0]));
+
       setCovered([false, true, true, true, true, true]);
       localStorage.setItem(
         "covered",
@@ -99,14 +102,20 @@ const Board = ({ cast, movie }) => {
         }
         temp[i] = false;
         if (i === 0) {
+          setResult("loss");
+          localStorage.setItem("result", JSON.stringify("loss"));
+
           setSnackbarMessage(movie?.nameEn ?? movie?.nameRu);
           localStorage.setItem(
             "snackbarMessage",
             JSON.stringify(movie?.nameEn ?? movie?.nameRu)
           );
 
-          setResult("loss");
-          localStorage.setItem("result", JSON.stringify("loss"));
+          localStorage.setItem(
+            "played",
+            JSON.stringify(JSON.parse(localStorage.getItem("played")) + 1)
+          );
+          localStorage.setItem("currentStreak", JSON.stringify(JSON.parse(0)));
         }
       }
       localStorage.setItem("lives", JSON.stringify(temp));
