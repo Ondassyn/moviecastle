@@ -16,7 +16,7 @@ const Header = () => {
 
   return (
     <div>
-      <div className="mb-12 py-4 px-16 flex flex-row justify-between border-b items-center">
+      <div className="py-4 px-4 flex flex-row justify-between border-b items-center">
         <div>
           <InformationCircleIcon
             className="h-8 cursor-pointer hover:text-orange-500"

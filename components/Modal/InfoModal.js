@@ -7,7 +7,7 @@ const InfoModal = ({ open, setOpen }) => {
   return (
     <AlertModal headerText={"How to play"} open={open} setOpen={setOpen}>
       <div
-        className={`flex flex-col gap-4 w-[30rem] border-4 border-double rounded-lg p-8 text-lg`}
+        className={`flex flex-col gap-4 w-full lg:w-[30rem] border-4 border-double rounded-lg p-4 text-lg`}
       >
         <div className="flex flex-row items-center gap-6">
           <FilmIcon className="h-6" />

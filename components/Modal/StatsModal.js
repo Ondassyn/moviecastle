@@ -1,4 +1,3 @@
-import { FilmIcon, HeartIcon, ThumbUpIcon } from "@heroicons/react/outline";
 import React from "react";
 import AlertModal from "./AlertModal";
 
@@ -6,7 +5,7 @@ const StatsModal = ({ open, setOpen }) => {
   return (
     <AlertModal headerText={"Stats"} open={open} setOpen={setOpen}>
       <div
-        className={`flex flex-col gap-4 w-[30rem] border-4 border-double rounded-lg p-8 text-lg`}
+        className={`flex flex-col gap-4 w-full lg:w-[30rem] border-4 border-double rounded-lg p-8 text-lg`}
       >
         <p className="text-center">Wins per Live</p>
         <div className="flex w-full flex-row justify-between gap-6 mb-8">

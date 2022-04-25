@@ -30,7 +30,7 @@ export default function Home({ movies, movieNumber }) {
         ?.then((json) =>
           setCast(
             shuffle(
-              json?.filter((s) => s?.professionKey === "ACTOR")?.slice(0, 5),
+              json?.filter((s) => s?.professionKey === "ACTOR")?.slice(0, 6),
               movieNumber
             )
           )
