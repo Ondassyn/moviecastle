@@ -84,7 +84,7 @@ const Board = ({ cast, movie }) => {
             json?.films?.map((film) => {
               return {
                 value: film?.filmId,
-                label: film?.nameEn ?? film?.nameRu,
+                label: `${film?.nameEn ?? film?.nameRu} (${film?.year})`,
               };
             })
           )

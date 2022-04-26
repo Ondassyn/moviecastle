@@ -55,11 +55,13 @@ const StatsModal = ({ open, setOpen }) => {
           </div>
           <div className="flex flex-col items-center">
             <p>
-              {Math.round(
-                (JSON.parse(localStorage.getItem("won")) /
-                  JSON.parse(localStorage.getItem("played"))) *
-                  100
-              ) || "-"}
+              {`${
+                Math.round(
+                  (JSON.parse(localStorage.getItem("won")) /
+                    JSON.parse(localStorage.getItem("played"))) *
+                    100
+                ) || "-"
+              }%`}
             </p>
             <p>Win Rate</p>
           </div>
