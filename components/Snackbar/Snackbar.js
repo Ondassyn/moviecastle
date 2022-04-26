@@ -1,7 +1,8 @@
-const Snackbar = ({ message, result }) => {
+const Snackbar = ({ message, result, onClick }) => {
   return (
     <div
-      className={`fixed top-20 w-full flex flex-row justify-center z-10 animate-fade-in-bottom `}
+      className={`fixed top-20 w-full flex flex-row justify-center z-10 animate-fade-in-bottom cursor-pointer`}
+      onClick={onClick}
     >
       <div
         className={`flex items-center max-w-xs p-2 rounded-lg shadow-xl dark:text-gray-400 dark:bg-gray-800 ${

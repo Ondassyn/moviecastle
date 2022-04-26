@@ -135,7 +135,13 @@ const Board = ({ cast, movie }) => {
       />
       <main className="flex flex-col w-full h-full gap-8 justify-center">
         {snackbarMessage && (
-          <Snackbar message={snackbarMessage} result={result} />
+          <Snackbar
+            message={snackbarMessage}
+            result={result}
+            onClick={() => {
+              if (result) setResultModalOpen(true);
+            }}
+          />
         )}
         <div className="flex flex-row px-6 mt-6 gap-2 justify-center">
           {lives?.map((l, index) => {
