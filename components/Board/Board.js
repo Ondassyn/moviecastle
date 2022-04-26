@@ -130,6 +130,8 @@ const Board = ({ cast, movie }) => {
         open={resultModalOpen}
         setOpen={setResultModalOpen}
         movie={movie}
+        lives={lives}
+        covered={covered}
       />
       <main className="flex flex-col w-full h-full gap-8 justify-center">
         {snackbarMessage && (

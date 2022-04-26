@@ -1,8 +1,18 @@
+import { CheckIcon, ShareIcon } from "@heroicons/react/outline";
+import { format, sub } from "date-fns";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AlertModal from "./AlertModal";
 
-const ResultModal = ({ result, open, setOpen, movie }) => {
+const COPIED_DURATION = 10000;
+
+const ResultModal = ({ result, open, setOpen, movie, lives, covered }) => {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (copied) setTimeout(() => setCopied(false), COPIED_DURATION);
+  }, [copied]);
+
   return (
     <AlertModal
       headerText={result === "win" ? "You got it!" : "Oh... almost"}
@@ -25,6 +35,48 @@ const ResultModal = ({ result, open, setOpen, movie }) => {
         <p className="text-2xl text-center">{`${
           movie?.nameEn ?? movie?.nameRu
         } (${movie?.year})`}</p>
+        <div className="self-center mt-2">
+          <button
+            className="rounded-md px-8 pb-1 bg-orange-500 hover:bg-orange-600 hover:disabled:bg-transparent text-xl py-1"
+            onClick={() => {
+              let livesText = "";
+              for (let l of lives)
+                if (l) livesText = "🤍" + livesText;
+                else livesText += "🖤";
+
+              const dateText = format(
+                sub(new Date(), { hours: 6 }),
+                "dd/MM/yyyy"
+              );
+
+              let coveredText = "";
+              for (let c of covered)
+                if (c) coveredText += "🟦";
+                else coveredText += "👤";
+
+              navigator?.clipboard?.writeText(
+                "MovieCastle " +
+                  dateText +
+                  "\r\n\r\n" +
+                  livesText +
+                  "\r\n" +
+                  coveredText +
+                  "\r\n\r\nPlay here moviecastle.vercel.app"
+              );
+              setCopied(true);
+            }}
+          >
+            {copied ? (
+              <span className="flex flex-row items-center gap-1">
+                <CheckIcon className="h-6" /> Copied
+              </span>
+            ) : (
+              <span className="flex flex-row items-center gap-1">
+                <ShareIcon className="h-4" /> Share
+              </span>
+            )}
+          </button>
+        </div>
       </div>
     </AlertModal>
   );
