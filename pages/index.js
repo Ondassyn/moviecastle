@@ -3,7 +3,7 @@ import Board from "../components/Board/Board";
 import Header from "../components/Header/Header";
 import differenceInDays from "date-fns/differenceInDays";
 
-export default function Home({ movies, movieNumber }) {
+export default function Home({ movies, movieNumber, timezoneOffset }) {
   const [movie, setMovie] = useState();
   const [cast, setCast] = useState();
 
@@ -40,7 +40,9 @@ export default function Home({ movies, movieNumber }) {
   return (
     <div className="">
       <Header />
-      {cast && <Board cast={cast} movie={movie} />}
+      {cast && (
+        <Board cast={cast} movie={movie} timezoneOffset={timezoneOffset} />
+      )}
     </div>
   );
 }
@@ -49,8 +51,12 @@ export default function Home({ movies, movieNumber }) {
 export async function getServerSideProps() {
   // Fetch data from external API
 
-  const numberOfDays = differenceInDays(new Date(), new Date(2000, 0, 0));
+  const currentDate = new Date();
+
+  const numberOfDays = differenceInDays(currentDate, new Date(2000, 0, 0));
   const movieNumber = Math.round((random(numberOfDays) * 1000) % 250);
+
+  const timezoneOffset = currentDate.getTimezoneOffset();
 
   const movieRes = await fetch(
     "https://kinopoiskapiunofficial.tech/api/v2.2/films/top?" +
@@ -66,7 +72,7 @@ export async function getServerSideProps() {
   const movies = await movieRes?.json();
 
   // Pass data to the page via props
-  return { props: { movies, movieNumber } };
+  return { props: { movies, movieNumber, timezoneOffset } };
 }
 
 const shuffle = (array, seed) => {

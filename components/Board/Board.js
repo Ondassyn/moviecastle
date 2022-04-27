@@ -9,7 +9,7 @@ import ResultModal from "../Modal/ResultModal";
 
 const SNACKBAR_DURATION = 3000;
 
-const Board = ({ cast, movie }) => {
+const Board = ({ cast, movie, timezoneOffset }) => {
   const [covered, setCovered] = useState([false, true, true, true, true, true]);
   const [lives, setLives] = useState();
   const [result, setResult] = useState();
@@ -132,6 +132,7 @@ const Board = ({ cast, movie }) => {
         movie={movie}
         lives={lives}
         covered={covered}
+        timezoneOffset={timezoneOffset}
       />
       <main className="flex flex-col w-full h-full gap-8 justify-center">
         {snackbarMessage && (

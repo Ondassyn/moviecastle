@@ -1,12 +1,21 @@
 import { CheckIcon, ShareIcon } from "@heroicons/react/outline";
-import { format, sub } from "date-fns";
+import { format, add } from "date-fns";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import AlertModal from "./AlertModal";
+import Countdown from "./Countdown";
 
 const COPIED_DURATION = 10000;
 
-const ResultModal = ({ result, open, setOpen, movie, lives, covered }) => {
+const ResultModal = ({
+  result,
+  open,
+  setOpen,
+  movie,
+  lives,
+  covered,
+  timezoneOffset,
+}) => {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -35,9 +44,13 @@ const ResultModal = ({ result, open, setOpen, movie, lives, covered }) => {
         <p className="text-2xl text-center">{`${
           movie?.nameEn ?? movie?.nameRu
         } (${movie?.year})`}</p>
-        <div className="self-center mt-2">
+        <div className="flex border-t flex-row pt-4 w-full items-center justify-evenly">
+          <div className="flex flex-col items-center">
+            <p>Next movie will be in</p>
+            <Countdown timezoneOffset={timezoneOffset} />
+          </div>
           <button
-            className="rounded-md px-8 pb-1 bg-orange-500 hover:bg-orange-600 hover:disabled:bg-transparent text-xl py-1"
+            className="rounded-md px-8 pb-1 h-10 bg-orange-500 hover:bg-orange-600 hover:disabled:bg-transparent text-xl py-1"
             onClick={() => {
               let livesText = "";
               for (let l of lives)
@@ -45,7 +58,7 @@ const ResultModal = ({ result, open, setOpen, movie, lives, covered }) => {
                 else livesText += "🖤";
 
               const dateText = format(
-                sub(new Date(), { hours: 6 }),
+                add(new Date(), { minutes: timezoneOffset }),
                 "dd/MM/yyyy"
               );
 
