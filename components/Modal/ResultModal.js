@@ -44,8 +44,8 @@ const ResultModal = ({
         <p className="text-2xl text-center">{`${
           movie?.nameEn ?? movie?.nameRu
         } (${movie?.year})`}</p>
-        <div className="flex border-t flex-row pt-4 w-full items-center justify-evenly">
-          <div className="flex flex-col items-center">
+        <div className="flex border-t lg:flex-row flex-col gap-4 pt-4 w-full items-center justify-evenly">
+          <div className="flex flex-col items-center text-center">
             <p>Next movie will be in</p>
             <Countdown timezoneOffset={timezoneOffset} />
           </div>
