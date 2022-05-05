@@ -42,7 +42,7 @@ const ResultModal = ({
           />
         </div>
         <p className="text-2xl text-center">{`${
-          movie?.nameEn ?? movie?.nameRu
+          movie?.nameOriginal ?? movie?.nameRu
         } (${movie?.year})`}</p>
         <div className="flex border-t lg:flex-row flex-col gap-4 pt-4 w-full items-center justify-evenly">
           <div className="flex flex-col items-center text-center">

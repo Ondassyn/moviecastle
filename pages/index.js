@@ -8,8 +8,8 @@ export default function Home({ movies, movieNumber, timezoneOffset }) {
   const [cast, setCast] = useState();
 
   useEffect(() => {
-    if (movies?.films?.length) {
-      setMovie(movies?.films[movieNumber % 20]);
+    if (movies?.items?.length) {
+      setMovie(movies?.items[movieNumber % 20]);
     }
   }, [movies]);
 
@@ -17,7 +17,7 @@ export default function Home({ movies, movieNumber, timezoneOffset }) {
     if (movie)
       fetch(
         "https://kinopoiskapiunofficial.tech/api/v1/staff?" +
-          new URLSearchParams({ filmId: movie?.filmId }),
+          new URLSearchParams({ filmId: movie?.kinopoiskId }),
         {
           method: "GET",
           headers: {
@@ -54,13 +54,19 @@ export async function getServerSideProps() {
   const currentDate = new Date();
 
   const numberOfDays = differenceInDays(currentDate, new Date(2000, 0, 0));
-  const movieNumber = Math.round((random(numberOfDays) * 1000) % 250);
+  const movieNumber = Math.round((random(numberOfDays) * 1000) % 400);
 
   const timezoneOffset = currentDate.getTimezoneOffset();
 
   const movieRes = await fetch(
-    "https://kinopoiskapiunofficial.tech/api/v2.2/films/top?" +
-      new URLSearchParams({ page: Math.floor(movieNumber / 20) }),
+    "https://kinopoiskapiunofficial.tech/api/v2.2/films?" +
+      new URLSearchParams({
+        countries: [1],
+        yearFrom: 1990,
+        type: "FILM",
+        order: "NUM_VOTE",
+        page: Math.floor(movieNumber / 20) + 1,
+      }),
     {
       method: "GET",
       headers: {

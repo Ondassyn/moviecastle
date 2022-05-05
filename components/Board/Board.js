@@ -18,7 +18,7 @@ const Board = ({ cast, movie, timezoneOffset }) => {
   const [resultModalOpen, setResultModalOpen] = useState(result ? true : false);
 
   useEffect(() => {
-    const storedMovieId = JSON.parse(localStorage.getItem("movieId"));
+    const storedMovieId = localStorage.getItem("movieId");
 
     if (!storedMovieId || !localStorage.getItem("played")) {
       localStorage.setItem("played", JSON.stringify(0));
@@ -28,7 +28,7 @@ const Board = ({ cast, movie, timezoneOffset }) => {
       localStorage.setItem("winsPerLive", JSON.stringify([0, 0, 0, 0, 0]));
     }
 
-    if (storedMovieId !== movie?.filmId) {
+    if (storedMovieId !== movie?.kinopoiskId) {
       if (JSON.parse(localStorage.getItem("winsPerLive")).length !== 6)
         localStorage.setItem("winsPerLive", JSON.stringify([0, 0, 0, 0, 0, 0]));
 
@@ -47,7 +47,7 @@ const Board = ({ cast, movie, timezoneOffset }) => {
       setSnackbarMessage(null);
       localStorage.setItem("snackbarMessage", null);
 
-      localStorage.setItem("movieId", JSON.stringify(movie?.filmId));
+      localStorage.setItem("movieId", JSON.stringify(movie?.kinopoiskId));
     } else {
       setCovered(JSON.parse(localStorage.getItem("covered")));
       setLives(JSON.parse(localStorage.getItem("lives")));
@@ -105,10 +105,10 @@ const Board = ({ cast, movie, timezoneOffset }) => {
           setResult("loss");
           localStorage.setItem("result", JSON.stringify("loss"));
 
-          setSnackbarMessage(movie?.nameEn ?? movie?.nameRu);
+          setSnackbarMessage(movie?.nameOriginal ?? movie?.nameRu);
           localStorage.setItem(
             "snackbarMessage",
-            JSON.stringify(movie?.nameEn ?? movie?.nameRu)
+            JSON.stringify(movie?.nameOriginal ?? movie?.nameRu)
           );
 
           localStorage.setItem(
@@ -194,11 +194,11 @@ const Board = ({ cast, movie, timezoneOffset }) => {
                 setSnackbarMessage("Movie was not selected");
                 return;
               }
-              if (movie?.filmId === guess) {
-                setSnackbarMessage(movie?.nameEn ?? movie?.nameRu);
+              if (movie?.kinopoiskId === guess) {
+                setSnackbarMessage(movie?.nameOriginal ?? movie?.nameRu);
                 localStorage.setItem(
                   "snackbarMessage",
-                  JSON.stringify(movie?.nameEn ?? movie?.nameRu)
+                  JSON.stringify(movie?.nameOriginal ?? movie?.nameRu)
                 );
 
                 setResult("win");
@@ -281,7 +281,11 @@ const Board = ({ cast, movie, timezoneOffset }) => {
                 </div>
               </div>
               <p className="text-xl text-center">
-                {!covered[index] ? (c?.nameEn ? c?.nameEn : c?.nameRu) : ""}
+                {!covered[index]
+                  ? c?.nameOriginal
+                    ? c?.nameOriginal
+                    : c?.nameRu
+                  : ""}
               </p>
             </div>
           ))}
