@@ -28,7 +28,8 @@ const Board = ({ cast, movie, timezoneOffset }) => {
       localStorage.setItem("winsPerLive", JSON.stringify([0, 0, 0, 0, 0]));
     }
 
-    if (storedMovieId !== movie?.kinopoiskId) {
+    if (storedMovieId !== movie?.kinopoiskId + "") {
+      console.log("first");
       if (JSON.parse(localStorage.getItem("winsPerLive")).length !== 6)
         localStorage.setItem("winsPerLive", JSON.stringify([0, 0, 0, 0, 0, 0]));
 
@@ -281,11 +282,7 @@ const Board = ({ cast, movie, timezoneOffset }) => {
                 </div>
               </div>
               <p className="text-xl text-center">
-                {!covered[index]
-                  ? c?.nameOriginal
-                    ? c?.nameOriginal
-                    : c?.nameRu
-                  : ""}
+                {!covered[index] ? (c?.nameEn ? c?.nameEn : c?.nameRu) : ""}
               </p>
             </div>
           ))}
