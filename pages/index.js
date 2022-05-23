@@ -3,6 +3,8 @@ import Board from "../components/Board/Board";
 import Header from "../components/Header/Header";
 import differenceInDays from "date-fns/differenceInDays";
 
+const API_KEY = process.env.KP_API_KEY;
+
 export default function Home({ movies, movieNumber, timezoneOffset }) {
   const [movie, setMovie] = useState();
   const [cast, setCast] = useState();
@@ -21,7 +23,7 @@ export default function Home({ movies, movieNumber, timezoneOffset }) {
         {
           method: "GET",
           headers: {
-            "X-API-KEY": "0e9acccd-a3f7-4f07-8243-3baab7430e65",
+            "X-API-KEY": API_KEY,
             "Content-Type": "application/json",
           },
         }
@@ -70,7 +72,7 @@ export async function getServerSideProps() {
     {
       method: "GET",
       headers: {
-        "X-API-KEY": "0e9acccd-a3f7-4f07-8243-3baab7430e65",
+        "X-API-KEY": API_KEY,
         "Content-Type": "application/json",
       },
     }
