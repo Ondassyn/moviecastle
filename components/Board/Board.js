@@ -248,7 +248,7 @@ const Board = ({ cast, movie, timezoneOffset }) => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 px-4 gap-x-2 gap-y-4 2xl:flex 2xl:flex-row 2xl:justify-center 2xl:gap-8">
           {cast?.map((c, index) => (
             <div key={index} className="relative flex flex-col gap-1 lg:gap-4">
-              <div className="w-[180px] h-[260px] 2xl:w-[192px] 2xl:h-[288px] perspective bg-transparent rounded-lg shadow-lg self-center">
+              <div className="w-[180px] h-[285px] 2xl:w-[192px] 2xl:h-[304px] perspective bg-transparent rounded-lg shadow-lg self-center">
                 <div
                   className={`relative w-full h-full preserve-3d duration-1000 ${
                     !covered[index] && "flip-horizontally"
@@ -275,7 +275,9 @@ const Board = ({ cast, movie, timezoneOffset }) => {
                     <img
                       src={c?.posterUrl}
                       alt="image"
-                      layout="fill"
+                      // layout="fill"
+                      width="auto"
+                      height="auto"
                       className="rounded-lg"
                     />
                   </div>

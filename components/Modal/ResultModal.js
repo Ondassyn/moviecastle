@@ -1,6 +1,6 @@
 import { CheckIcon, ShareIcon } from "@heroicons/react/outline";
 import { format, add } from "date-fns";
-import Image from "next/image";
+// import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import AlertModal from "./AlertModal";
 import Countdown from "./Countdown";
@@ -34,10 +34,15 @@ const ResultModal = ({
         }`}
       >
         <div className="relative w-[192px] h-[288px] lg:w-[288px] lg:h-[432px]">
-          <Image
+          <img
+            // onLoad={({ target: img }) => {
+            //   const { offsetHeight, offsetWidth } = img;
+            //   console.log(offsetHeight, offsetWidth);
+            // }}
             src={movie?.posterUrl}
             alt="image"
-            layout="fill"
+            width="auto"
+            height="auto"
             className="rounded-lg"
           />
         </div>

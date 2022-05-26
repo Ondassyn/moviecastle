@@ -16,10 +16,6 @@ export default function Home({ movies, movieNumber, timezoneOffset }) {
   }, [movies]);
 
   useEffect(() => {
-    console.log("cast", cast);
-  }, [cast]);
-
-  useEffect(() => {
     if (movie)
       fetch(
         "https://kinopoiskapiunofficial.tech/api/v1/staff?" +
