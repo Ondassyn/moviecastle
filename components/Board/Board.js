@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import React from "react";
 import HeartOutlineIcon from "@heroicons/react/outline/HeartIcon";
 import HeartSolidIcon from "@heroicons/react/solid/HeartIcon";
@@ -272,7 +272,7 @@ const Board = ({ cast, movie, timezoneOffset }) => {
                   </div>
 
                   <div className="absolute flip-horizontally backface-hidden w-full h-full">
-                    <Image
+                    <img
                       src={c?.posterUrl}
                       alt="image"
                       layout="fill"
