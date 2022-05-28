@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import differenceInDays from "date-fns/differenceInDays";
 
-import Board from "../components/Board/Board";
-import Header from "../components/Header/Header";
-import { fetchStaff, fetchMovies } from "../domain/kinopoiskapi";
-import { shuffle } from "../utils/shuffle";
-import { random } from "../utils/random";
+import Board from "../../components/Board/Board";
+import Header from "../../components/Header/Header";
+import { fetchStaff, fetchMovies } from "../../domain/kinopoiskapi";
+import { shuffle } from "../../utils/shuffle";
+import { random } from "../../utils/random";
 
-export default function Home({
+export default function Day({
   movies,
   movieNumber,
   movie,
@@ -35,20 +35,22 @@ export default function Home({
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   let movies, movie, staff, movieNumber, timezoneOffset;
 
-  const currentDate = new Date();
+  const currentDate = new Date(context.params.day);
 
-  const numberOfDays = differenceInDays(currentDate, new Date(2000, 0, 0));
+  if (currentDate instanceof Date && !isNaN(currentDate)) {
+    const numberOfDays = differenceInDays(currentDate, new Date(2000, 0, 0));
 
-  movieNumber = Math.round((random(numberOfDays) * 1000) % 400);
+    movieNumber = Math.round((random(numberOfDays) * 1000) % 400);
 
-  timezoneOffset = currentDate.getTimezoneOffset();
+    timezoneOffset = currentDate.getTimezoneOffset();
 
-  movies = await fetchMovies({
-    page: Math.floor(movieNumber / 20) + 1,
-  });
+    movies = await fetchMovies({
+      page: Math.floor(movieNumber / 20) + 1,
+    });
+  }
 
   if (movies?.items?.length) {
     movie = movies?.items[movieNumber % 20];
