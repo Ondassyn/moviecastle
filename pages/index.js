@@ -91,17 +91,11 @@ export async function getServerSideProps() {
   return { props: { movies, movieNumber, timezoneOffset } };
 }
 
-const getDataWithTimeout = async ({ endpoint, movieNumber, counter = 0 }) => {
-  if (counter === 5) {
-    console.log("aborting...");
-    return;
-  }
-
+const getDataWithTimeout = async ({ endpoint }) => {
   const controller = new AbortController();
 
   const id = setTimeout(() => {
     controller.abort();
-    getData({ movieNumber, counter: counter + 1 });
   }, 4999);
 
   const reponse = await fetch(endpoint, {
