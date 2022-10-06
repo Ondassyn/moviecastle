@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Board from "../components/Board/Board";
 import Header from "../components/Header/Header";
 import differenceInDays from "date-fns/differenceInDays";
+import { RefreshIcon } from "@heroicons/react/outline";
 
 const API_KEY = process.env.KP_API_KEY;
 
@@ -42,8 +43,15 @@ export default function Home({ movies, movieNumber, timezoneOffset }) {
   return (
     <div className="">
       <Header />
-      {cast && (
+      {cast ? (
         <Board cast={cast} movie={movie} timezoneOffset={timezoneOffset} />
+      ) : (
+        <div className="h-full w-full flex flex-col gap-2 justify-center items-center text-xl">
+          <RefreshIcon className="h-8" />
+          <p className="whitespace-pre-line text-center">
+            {"Oops, something went wrong.\nTry refreshing the page"}
+          </p>
+        </div>
       )}
     </div>
   );
@@ -60,28 +68,54 @@ export async function getServerSideProps() {
 
   const timezoneOffset = currentDate.getTimezoneOffset();
 
-  const movieRes = await fetch(
-    "https://kinopoiskapiunofficial.tech/api/v2.2/films?" +
-      new URLSearchParams({
-        countries: [1],
-        yearFrom: 1990,
-        type: "FILM",
-        order: "NUM_VOTE",
-        page: Math.floor(movieNumber / 20) + 1,
-      }),
-    {
-      method: "GET",
-      headers: {
-        "X-API-KEY": API_KEY,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  const movies = await movieRes?.json();
+  let movies = {};
+  try {
+    const movieRes = await getDataWithTimeout({
+      endpoint:
+        "https://kinopoiskapiunofficial.tech/api/v2.2/films?" +
+        new URLSearchParams({
+          countries: [1],
+          yearFrom: 1990,
+          type: "FILM",
+          order: "NUM_VOTE",
+          page: Math.floor(movieNumber / 20) + 1,
+        }),
+      movieNumber,
+    });
+    movies = await movieRes?.json();
+  } catch (error) {
+    console.log(error);
+  }
 
   // Pass data to the page via props
   return { props: { movies, movieNumber, timezoneOffset } };
 }
+
+const getDataWithTimeout = async ({ endpoint, movieNumber, counter = 0 }) => {
+  if (counter === 5) {
+    console.log("aborting...");
+    return;
+  }
+
+  const controller = new AbortController();
+
+  const id = setTimeout(() => {
+    controller.abort();
+    getData({ movieNumber, counter: counter + 1 });
+  }, 4999);
+
+  const reponse = await fetch(endpoint, {
+    method: "GET",
+    headers: {
+      "X-API-KEY": API_KEY,
+      "Content-Type": "application/json",
+    },
+    signal: controller.signal,
+  });
+  clearTimeout(id);
+
+  return reponse;
+};
 
 const shuffle = (array, seed) => {
   // <-- ADDED ARGUMENT
