@@ -97,11 +97,11 @@ export async function getServerSideProps() {
 }
 
 const getDataWithTimeout = async ({ endpoint }) => {
-  const controller = new AbortController();
+  // const controller = new AbortController();
 
-  const id = setTimeout(() => {
-    controller.abort();
-  }, 10000);
+  // const id = setTimeout(() => {
+  //   controller.abort();
+  // }, 10000);
 
   const reponse = await fetch(endpoint, {
     method: "GET",
@@ -109,9 +109,9 @@ const getDataWithTimeout = async ({ endpoint }) => {
       "X-API-KEY": API_KEY,
       "Content-Type": "application/json",
     },
-    signal: controller.signal,
+    // signal: controller.signal,
   });
-  clearTimeout(id);
+  // clearTimeout(id);
 
   return reponse;
 };
