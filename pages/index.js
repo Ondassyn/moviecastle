@@ -9,13 +9,10 @@ const API_KEY = process.env.KP_API_KEY;
 export default function Home({ movies, movieNumber, timezoneOffset }) {
   const [movie, setMovie] = useState();
   const [cast, setCast] = useState();
-  const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
     if (movies?.items?.length) {
       setMovie(movies?.items[movieNumber % 20]);
-    } else {
-      setInitialLoading(false);
     }
   }, [movies]);
 
@@ -46,11 +43,7 @@ export default function Home({ movies, movieNumber, timezoneOffset }) {
   return (
     <div className="">
       <Header />
-      {initialLoading ? (
-        <div className="h-full w-full flex flex-col gap-2 justify-center items-center text-xl">
-          <p className="whitespace-pre-line text-center">{"Loading..."}</p>
-        </div>
-      ) : cast ? (
+      {cast ? (
         <Board cast={cast} movie={movie} timezoneOffset={timezoneOffset} />
       ) : (
         <div className="h-full w-full flex flex-col gap-2 justify-center items-center text-xl">
