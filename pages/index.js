@@ -54,7 +54,12 @@ export default function Home({ movies, movieNumber, timezoneOffset }) {
         <Board cast={cast} movie={movie} timezoneOffset={timezoneOffset} />
       ) : (
         <div className="h-full w-full flex flex-col gap-2 justify-center items-center text-xl">
-          <RefreshIcon className="h-8" />
+          <RefreshIcon
+            className="h-8 cursor-pointer"
+            onClick={() => {
+              window.location.reload();
+            }}
+          />
           <p className="whitespace-pre-line text-center">
             {"Oops, something went wrong.\nTry refreshing the page"}
           </p>
@@ -103,7 +108,7 @@ const getDataWithTimeout = async ({ endpoint }) => {
 
   const id = setTimeout(() => {
     controller.abort();
-  }, 4999);
+  }, 10000);
 
   const reponse = await fetch(endpoint, {
     method: "GET",
