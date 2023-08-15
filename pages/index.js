@@ -50,7 +50,7 @@ export default function Home({
   return (
     <div className="">
       <Header />
-      {!cast ? (
+      {cast ? (
         <Board
           cast={cast}
           movie={movie}
