@@ -1,12 +1,17 @@
-import { useEffect, useState } from "react";
-import Board from "../components/Board/Board";
-import Header from "../components/Header/Header";
-import differenceInDays from "date-fns/differenceInDays";
-import { RefreshIcon } from "@heroicons/react/outline";
+import { useEffect, useState } from 'react';
+import Board from '../components/Board/Board';
+import Header from '../components/Header/Header';
+import differenceInDays from 'date-fns/differenceInDays';
+import { RefreshIcon } from '@heroicons/react/outline';
+import Loader from '../components/Loader/Loader';
 
 const API_KEY = process.env.KP_API_KEY;
 
-export default function Home({ movies, movieNumber, timezoneOffset }) {
+export default function Home({
+  movies,
+  movieNumber,
+  timezoneOffset,
+}) {
   const [movie, setMovie] = useState();
   const [cast, setCast] = useState();
 
@@ -19,13 +24,13 @@ export default function Home({ movies, movieNumber, timezoneOffset }) {
   useEffect(() => {
     if (movie)
       fetch(
-        "https://kinopoiskapiunofficial.tech/api/v1/staff?" +
+        'https://kinopoiskapiunofficial.tech/api/v1/staff?' +
           new URLSearchParams({ filmId: movie?.kinopoiskId }),
         {
-          method: "GET",
+          method: 'GET',
           headers: {
-            "X-API-KEY": API_KEY,
-            "Content-Type": "application/json",
+            'X-API-KEY': API_KEY,
+            'Content-Type': 'application/json',
           },
         }
       )
@@ -33,7 +38,9 @@ export default function Home({ movies, movieNumber, timezoneOffset }) {
         ?.then((json) =>
           setCast(
             shuffle(
-              json?.filter((s) => s?.professionKey === "ACTOR")?.slice(0, 6),
+              json
+                ?.filter((s) => s?.professionKey === 'ACTOR')
+                ?.slice(0, 6),
               movieNumber
             )
           )
@@ -43,18 +50,30 @@ export default function Home({ movies, movieNumber, timezoneOffset }) {
   return (
     <div className="">
       <Header />
-      {cast ? (
-        <Board cast={cast} movie={movie} timezoneOffset={timezoneOffset} />
+      {!cast ? (
+        <Board
+          cast={cast}
+          movie={movie}
+          timezoneOffset={timezoneOffset}
+        />
       ) : (
-        <div className="h-full w-full flex flex-col gap-2 justify-center items-center text-xl">
-          <RefreshIcon
-            className="h-8 cursor-pointer"
-            onClick={() => {
-              window.location.reload();
-            }}
-          />
+        // <div className="h-full w-full flex flex-col gap-2 justify-center items-center text-xl">
+        //   <RefreshIcon
+        //     className="h-8 cursor-pointer"
+        //     onClick={() => {
+        //       window.location.reload();
+        //     }}
+        //   />
+        //   <p className="whitespace-pre-line text-center">
+        //     {"Oops, something went wrong.\nTry refreshing the page"}
+        //   </p>
+        // </div>
+        <div className="flex flex-col justify-center p-12 gap-4">
+          <div className="h-12">
+            <Loader />
+          </div>
           <p className="whitespace-pre-line text-center">
-            {"Oops, something went wrong.\nTry refreshing the page"}
+            {'Slow connection\n Please wait...'}
           </p>
         </div>
       )}
@@ -68,7 +87,10 @@ export async function getServerSideProps() {
 
   const currentDate = new Date();
 
-  const numberOfDays = differenceInDays(currentDate, new Date(2000, 0, 0));
+  const numberOfDays = differenceInDays(
+    currentDate,
+    new Date(2000, 0, 0)
+  );
   const movieNumber = Math.round((random(numberOfDays) * 1000) % 400);
 
   const timezoneOffset = currentDate.getTimezoneOffset();
@@ -77,12 +99,12 @@ export async function getServerSideProps() {
   try {
     const movieRes = await getDataWithTimeout({
       endpoint:
-        "https://kinopoiskapiunofficial.tech/api/v2.2/films?" +
+        'https://kinopoiskapiunofficial.tech/api/v2.2/films?' +
         new URLSearchParams({
           countries: [1],
           yearFrom: 1990,
-          type: "FILM",
-          order: "NUM_VOTE",
+          type: 'FILM',
+          order: 'NUM_VOTE',
           page: Math.floor(movieNumber / 20) + 1,
         }),
       movieNumber,
@@ -104,10 +126,10 @@ const getDataWithTimeout = async ({ endpoint }) => {
   // }, 10000);
 
   const reponse = await fetch(endpoint, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "X-API-KEY": API_KEY,
-      "Content-Type": "application/json",
+      'X-API-KEY': API_KEY,
+      'Content-Type': 'application/json',
     },
     // signal: controller.signal,
   });
